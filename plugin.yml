@@ -1,0 +1,8 @@
+name: DragonPermissions
+version: 1.0
+main: me.DragonPermissions.DragonSlayer.Main
+author: DragonSlayer
+commands:
+   group:
+    description: Group command to add perms and create groups
+    usage: /<command> <args>

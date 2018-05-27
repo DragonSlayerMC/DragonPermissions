@@ -1,0 +1,4 @@
+prefix: "&cPrefix for group $GROUP updated."
+permadded: "&cPermission $PERM added to the group $GROUP"
+notexist: "The group $GROUP does not exist, use /group create $GROUP to create it!"
+groupcreate: "Group $GROUP has been created!"

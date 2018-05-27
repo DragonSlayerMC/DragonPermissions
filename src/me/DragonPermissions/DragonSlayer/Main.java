@@ -27,11 +27,7 @@ public class Main extends JavaPlugin {
 	public void onEnable() {
 		plugin = this;
 		saveDefaultConfig();
-
 		pm.registerEvents(new onJoinEvent(), this);
-		
-		
-		
 		getCommand("group").setExecutor(new GroupCommand());
 		
 		

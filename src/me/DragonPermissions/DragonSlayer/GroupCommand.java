@@ -1,18 +1,16 @@
 package me.DragonPermissions.DragonSlayer;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import dragon.core.Config;
+import dragon.core.Utils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import net.md_5.bungee.api.ChatColor;
 
 public class GroupCommand implements CommandExecutor {
 
@@ -29,6 +27,8 @@ public class GroupCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (label.equalsIgnoreCase("dggroup")) {
             Player p = (Player) sender;
+            Config messagesconfig = new Config(plugin, "messages.yml");
+            FileConfiguration messages = messagesconfig.getConfig();
             Config myconfig = new Config(plugin, "groups.yml");
             FileConfiguration groups = myconfig.getConfig();
             if (args.length == 4) {
@@ -40,7 +40,7 @@ public class GroupCommand implements CommandExecutor {
                     if (args[1].equalsIgnoreCase("prefix")) {
                         groups.set("groups." + args[0] + ".prefix", args[2]);
                         myconfig.saveConfig();
-                        p.sendMessage(ChatColor.RED + "Prefix for group " + args[0] + " updated.");
+                        p.sendMessage(Utils.DMessage(messages.getString("prefix"), "$GROUP", args[0]));
 
                         //add perm
                     } else if (args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("addPermission")) {
@@ -50,40 +50,30 @@ public class GroupCommand implements CommandExecutor {
                             list.add(args[2]);
                             groups.set("groups." + args[0] + ".permissions", list);
                             myconfig.saveConfig();
-                            p.sendMessage(ChatColor.RED + "Permission " + args[2] + " added to the group " + args[0]);
+                            p.sendMessage(Utils.DMessage(messages.getString("permadded"), "$GROUP", args[0], "$PERM", args[2]));
                         } else {
                             List<String> list = groups.getStringList("groups." + args[0] + ".permissions");
                             list.add(args[2]);
                             groups.set("groups." + args[0] + ".permissions", list);
                             myconfig.saveConfig();
-                            p.sendMessage(ChatColor.RED + "Permission " + args[2] + " added to the group " + args[0]);
+                            p.sendMessage(Utils.DMessage(messages.getString("permadded"), "$GROUP", args[0], "$PERM", args[2]));
                         }
-
-
                     }
-
-
+                } else {
+                    p.sendMessage(Utils.DMessage(messages.getString("notexist"), "$GROUP", args[0]));
+                }
+            } else if (args.length == 2) {
+                if (args[1].equalsIgnoreCase("create")) {
+                    groups.set("groups." + args[0] + ".default", false);
+                    groups.set("groups." + args[0] + ".prefix", args[1] + " ");
+                    myconfig.saveConfig();
+                    p.sendMessage(Utils.DMessage(messages.getString("groupcreate"), "$GROUP", args[0]));
                 }
 
-            } else {
-                p.sendMessage(ChatColor.RED + "The group " + args[0] + " does not exist, use /group create <group> to create it!");
             }
-
-        } else if (args.length == 2) {
-            if (args[1].equalsIgnoreCase("create")) {
-
-                groups.set("groups." + args[0] + ".default", false);
-                groups.set("groups." + args[0] + ".prefix", args[1] + " ");
-                myconfig.saveConfig();
-                p.sendMessage(ChatColor.RED + "Group " + args[0] + " has been created!");
-
-
-            }
-
         }
+        return true;
     }
-		return true;
-}
 
     public boolean groupExists(String group) {
 
